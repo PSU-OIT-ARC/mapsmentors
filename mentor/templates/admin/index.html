@@ -46,17 +46,6 @@
         </table>
         </div>
     {% endfor %}
-    <div class="app-counter module">
-        <table>
-            <caption>
-                <a href="{% url 'counter-list' %}" class="section" title="Counter list">Click Counter</a>
-            </caption>
-            <tr>
-                <th scope="row"><a href="{% url 'counter-list' %}">Click counter list</a></th>
-                <th scope="row"></th>
-            </tr>
-        </table>
-    </div>
 {% else %}
     <p>{% trans "You don't have permission to edit anything." %}</p>
 {% endif %}
@@ -67,12 +56,6 @@
 <div id="content-related">
     <div class="module" id="download-csv" >
         <h2>Download CSV files</h2>
-        <h3>Click-through Counter Data</h3>
-        <ul>
-            <li>
-                <a href="{% url 'counter-reporting' %}">Report Click-through CSV</a>
-            </li>
-        </ul>
         <h3>Responses Data</h3>
             <ul>
                 <li>
