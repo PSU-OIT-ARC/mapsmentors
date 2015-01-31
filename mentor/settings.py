@@ -75,7 +75,6 @@ INSTALLED_APPS = (
     'permissions',
     'mentor.questionaire',
     'mentor.users',
-    'mentor.counter',
 )
 
 MIDDLEWARE_CLASSES = (
