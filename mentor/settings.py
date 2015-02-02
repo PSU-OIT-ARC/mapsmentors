@@ -49,6 +49,8 @@ AUTH_USER_MODEL = 'users.User'
 
 ALLOWED_HOSTS = ['.pdx.edu'] + (["*"] if DEBUG else [])
 
+TEST_RUNNER = 'mentor.test_runner.TestRunner'
+
 # allow the use of wildcards in the INTERAL_IPS setting
 class IPList(list):
     # do a unix-like glob match

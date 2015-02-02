@@ -12,7 +12,7 @@ class UserTest(TestCase):
 
     def test_get_short_name(self):
         foo = User.objects.get(first_name="foo")
-        self.assertEqual(foo.get_short_name(), "f bar")
+        self.assertEqual(foo.get_short_name(), "foo bar")
 
     def test_has_perm(self):
         foo = User.objects.get(first_name="foo")

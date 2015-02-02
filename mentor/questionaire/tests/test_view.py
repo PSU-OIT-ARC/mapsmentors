@@ -12,19 +12,22 @@ class QuestionaireViewTest(UserLogin):
 
     def test_post(self):
         data = {
-            'student_name' : 'Student Name',
-            'identity' : 'ST',
-            'primary_concern' : 'My primary concern',
-            'step_taken' : 'My steps taken',
-            'support_from_MAPS' : 'Support from MAPS',
-            'follow_up_email' :'abc@mail.com',
-            'follow_up_phone' : '4443332222',
-            'follow_up_appointment' : date.today(),
+            "name": "Student Name",
+            "identity": "ST",
+            "mentor_name": "John",
+            "UNST_course": "FRINQ",
+            "type_of_course": "HB",
+            "primary_concern": ["1", "2"],
+            "when_take_step": "In the past few days",
+            "follow_up_email": "mdj2@pdx.edu",
+            "follow_up_phone_0": "",
+            "follow_up_phone_1": "",
+            "follow_up_phone_2": "",
         }
 
         response = self.client.post(reverse('questionaire-adding'), data)
         # Make sure the save method is called
-        self.assertTrue(Questionaire.objects.filter(student_name=data['student_name']).exists())
+        self.assertTrue(Questionaire.objects.filter(student_name=data['name']).exists())
         self.assertRedirects(response, reverse('questionaire-thanks'))
 
 # Test report view
@@ -39,12 +42,10 @@ class ReportViewTest(AdminLogin):
             created_on = now(),
             student_name='Student Name',
             identity='ST',
-            primary_concern='My primary concern',
             step_taken='My steps taken',
             support_from_MAPS='Support from MAPS',
             follow_up_email='abc@mail.com',
             follow_up_phone='4443332222',
-            follow_up_appointment=now().date(),
         )
         questionaire.user = self.user 
         questionaire.save()
@@ -59,4 +60,4 @@ class ReportViewTest(AdminLogin):
         # Need to test csv reponse
         self.assertEqual(response['Content-Type'],'text/csv')
         
-        self.assertIn(questionaire.follow_up_email, response.content )
+        self.assertIn(questionaire.follow_up_email, response.content.decode())

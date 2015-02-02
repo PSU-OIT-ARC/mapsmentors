@@ -8,12 +8,10 @@ class QuestionaireModelTest(UserLogin):
         questionaire = Questionaire(
             student_name='Student Name',
             identity='ST',
-            primary_concern='My primary concern',
             step_taken='My steps taken',
             support_from_MAPS='Support from MAPS',
             follow_up_email='abc@mail.com',
             follow_up_phone='4443332222',
-            follow_up_appointment=date.today(),
         )
         questionaire.user = self.user 
         questionaire.save()
