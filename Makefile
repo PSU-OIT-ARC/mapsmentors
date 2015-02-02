@@ -1,51 +1,66 @@
-.PHONY: run clean install deploy prod dev
+.PHONY: init clean recreate-db run test coverage
 
-DEFAULT_DB_NAME=mentor
-WSGI_PATH=mentor/wsgi.py
-GIT_REMOTE=git@github.com:PSU-OIT-ARC/mentor.git
-GIT_REMOTE_HTTPS=https://github.com/PSU-OIT-ARC/mentor.git
-DEV_PATH=/vol/www/mapsmentors/dev
-PROD_PATH=/vol/www/mapsmentors/prod
+.DEFAULT_GOAL := run
+
+PROJECT_NAME = mentor
+VENV_DIR ?= .env
+export PATH := $(VENV_DIR)/bin:$(PATH)
+MANAGE = ./manage.py
+
+# completely wipes out the database and environment and rebuilds it and loads some dummy data
+init:
+	rm -rf $(VENV_DIR)
+	@$(MAKE) $(VENV_DIR)
+	mysql -u root -e 'drop database $(PROJECT_NAME);' || true
+	mysql -u root -e 'create database $(PROJECT_NAME);'
+	@$(MAKE) reload
+	$(MANAGE) loaddummydata
+	@$(MAKE) run
 
 
-PYTHON=python3
-export PATH:=.env/bin:$(PATH)
+# run all the usual Django stuff to get this project bootstrapped
+reload: $(VENV_DIR)
+	$(MANAGE) migrate
+	$(MANAGE) collectstatic --noinput
+	$(MANAGE) loaddata choices
+	mkdir -p media
+	touch $(PROJECT_NAME)/wsgi.py
 
 
-run: .env
-	python manage.py runserver 0.0.0.0:8000
+# build the virtualenv
+$(VENV_DIR): requirements.txt
+	@if [ -d "$(VENV_DIR)" ]; then \
+	    echo "Directory exists: $(VENV_DIR)"; \
+	    exit 1; \
+	fi
+	python3 -m venv $(VENV_DIR)
+	curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | python3
+	pip install -r requirements.txt
 
+
+# remove pyc junk
 clean:
 	find . -iname "*.pyc" -delete
 	find . -iname "*.pyo" -delete
 	find . -iname "__pycache__" -delete
 
-deploy: .env
-ifdef BRANCH
-	git remote set-url origin $(GIT_REMOTE_HTTPS)
-	git remote update
-	git fetch --all
-	git merge --ff-only origin/$(BRANCH)
-endif
-	python manage.py migrate
-	python manage.py loaddata choices
-	python manage.py collectstatic --noinput
-	touch $(WSGI_PATH)
 
-install: .env
-	mysql -e "CREATE DATABASE IF NOT EXISTS $(DEFAULT_DB_NAME)"
-	python manage.py migrate
-	python manage.py loaddata choices
+# run the django web server
+host ?= 0.0.0.0
+port ?= 8000
+run: $(VENV_DIR)
+	$(MANAGE) runserver $(host):$(port)
 
-.env: requirements.txt
-	$(PYTHON) -m venv .env
-	curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | python
-	pip install -r requirements.txt
 
-dev:
-	git push $(GIT_REMOTE) HEAD:master
-	ssh -t hrimfaxi.oit.pdx.edu "sudo bash -c 'cd $(DEV_PATH) ; make BRANCH=master deploy'"
+# run the unit tests
+# use `make test test=path.to.test` if you want to run a specific test
+test: $(VENV_DIR)
+	$(MANAGE) test $(test)
 
-prod:
-	git push $(GIT_REMOTE) HEAD:prod
-	ssh -t hrimfaxi.oit.pdx.edu "sudo bash -c 'cd $(PROD_PATH) ; make BRANCH=prod deploy'"
+
+# run the unit tests with coverage.
+# go to `0.0.0.0:8000/htmlcov/index.html` to view test coverage
+coverage: $(VENV_DIR)
+	coverage run ./manage.py test $(test)
+	coverage html --omit=.env/*
+
