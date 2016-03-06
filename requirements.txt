@@ -1,9 +1,7 @@
 -f https://cdn.research.pdx.edu/pypi/dist/
 django<1.8
 pymysql
--e git://github.com/PSU-OIT-ARC/djangocas.git#egg=djangocas
 pytz
-python3-ldap<0.9.6 # the higher versions don't install correctly
 -e git://github.com/PSU-OIT-ARC/django-perms.git#egg=django-perms
 django-arcutils>=1.2.0,<2.0
 varlet

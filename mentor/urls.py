@@ -27,10 +27,11 @@ urlpatterns = patterns('',
     url(r'^questionaire/thanks/?$', TemplateView.as_view(template_name='questionaire/thanks.html'), name='questionaire-thanks'),
 )
 
-# djangocas
+# CAS authentication
 urlpatterns += patterns('',
-    url(r'^accounts/login/$', 'djangocas.views.login', name='account-login'),
-    url(r'^accounts/logout/$', 'djangocas.views.logout', name='account-logout'),
+    url(r'^accounts/login/$', 'arcutils.cas.views.login', name='account-login'),
+    url(r'^accounts/logout/$', 'arcutils.cas.views.logout', name='account-logout'),
+    url(r'^accounts/validate/$', 'arcutils.cas.views.validate', name='cas-validate'),
 )
 
 if settings.DEBUG:

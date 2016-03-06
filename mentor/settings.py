@@ -89,29 +89,12 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-# CAS authentication setting using djangocas
-CAS_SERVER_URL = 'https://sso.pdx.edu/cas/'
-
+# CAS authentication settings
 AUTHENTICATION_BACKENDS = (
+    'arcutils.cas.backends.CASModelBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'mentor.backends.PSUBackend',
 )
 
-MIDDLEWARE_CLASSES += (
-    'djangocas.middleware.CASMiddleware',
-)
-
-## end CAS authentication setting
-
-# LDAP support
-#LDAP_URL = "ldap://ldap-login.oit.pdx.edu"
-#LDAP_BASE_DN = 'ou=people,dc=pdx,dc=edu'
-LDAP = {
-    "default": {
-        "host": "ldap://ldap-login.oit.pdx.edu",
-        "search_dn": 'ou=people,dc=pdx,dc=edu'
-    }
-}
 
 ROOT_URLCONF = 'mentor.urls'
 
