@@ -2,7 +2,7 @@
 django<1.8
 pymysql
 pytz
--e git://github.com/PSU-OIT-ARC/django-perms.git#egg=django-perms
+django-perms>=1.2.0
 django-arcutils>=1.2.0,<2.0
 varlet
 python-logstash==0.4.2
