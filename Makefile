@@ -8,14 +8,11 @@ export PATH := $(VENV_DIR)/bin:$(PATH)
 MANAGE = ./manage.py
 
 # completely wipes out the database and environment and rebuilds it and loads some dummy data
-init:
-	rm -rf $(VENV_DIR)
-	@$(MAKE) $(VENV_DIR)
+init: $(VENV_DIR)
 	mysql -u root -e 'drop database $(PROJECT_NAME);' || true
 	mysql -u root -e 'create database $(PROJECT_NAME);'
 	@$(MAKE) reload
-	$(MANAGE) loaddummydata
-	@$(MAKE) run
+	$(MANAGE) test
 
 
 # run all the usual Django stuff to get this project bootstrapped
