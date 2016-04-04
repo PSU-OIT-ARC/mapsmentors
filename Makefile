@@ -29,9 +29,8 @@ reload: $(VENV_DIR)
 
 # build the virtualenv
 $(VENV_DIR):
-	python3 -m venv $(VENV_DIR)
-	curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | python3
-	pip install -r requirements.txt
+	virtualenv -p python3.3 $(VENV_DIR)
+	$(VENV_DIR)/bin/pip install -r requirements.txt
 
 
 # remove pyc junk
